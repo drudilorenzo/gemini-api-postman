@@ -1,0 +1,345 @@
+{
+	"info": {
+		"_postman_id": "48642fbb-f651-4918-b0e4-b23667ba610e",
+		"name": "Function Calling",
+		"description": "## Function Calling with the Gemini API\n\n- TODO: Function Declarations Spec, Parallel Function Calling, Compositional function calling, Function calling modes\n    \n\nThe **Gemini API** supports a powerful feature called **function calling**, which allows you to define custom functions the model can reason about. While the model doesn’t directly execute these functions, it can generate structured outputs specifying a function name and suggested arguments.  \nYour application can then:\n\n- Parse this structured output,\n    \n- Call the actual function or external API with the suggested arguments,\n    \n- Return the result back to the model for further processing.\n    \n\nThis creates a bridge between natural language understanding and real-world actions, enabling more dynamic, grounded interactions.\n\n🔗 **Official Documentation**: [Function Calling API](https://ai.google.dev/gemini-api/docs/function-calling) \n  \n\n---\n\n### 💡 Use Cases for Function Calling\n\nFunction calling unlocks several powerful use cases:\n\n- **Augment Knowledge**:  \n    Retrieve information from external sources such as APIs, databases, or knowledge bases.\n    \n- **Extend Capabilities**:  \n    Use tools to overcome model limitations—for example, calling a calculator, rendering graphs, or fetching weather data.\n    \n- **Take Actions**:  \n    Trigger real-world actions like scheduling appointments, sending emails, creating invoices, or interacting with smart home devices.\n    \n\n---\n\n## 🔧 How Function Calling Works\n\n<img src=\"https://content.pstmn.io/c3c42764-7d3a-4fd1-a0a0-1208c16f80cf/ZnVuY3Rpb24tY2FsbGluZy1vdmVydmlldy5wbmc=\">\n\nFunction calling follows a structured interaction pattern between your app, the model, and the external functions:\n\n1. **Define Function Declaration**  \n    In your application, define the function's name, parameters, and description. This declaration is shared with the model so it understands how and when to use the function.\n    \n2. **Call the Model with Function Declarations**  \n    Send a user prompt along with the function declaration(s) to the Gemini model. If the model deems it useful, it returns a **structured JSON response** with:\n    \n    - `function_name`\n        \n    - `arguments`\n        \n3. **Execute the Function (Your Responsibility)**  \n    The model **does not** execute the function itself. Your application must:\n    \n    - Check if a function call is present in the model's response.\n        \n    - If **yes**: Extract the function name and arguments, execute the corresponding function, and collect the result.\n        \n    - If **no**: Use the model's direct text response (this flow is possible but less emphasized in this pattern).\n        \n4. **Return Result for Final Response**  \n    If a function was executed, pass the result back to the model in a follow-up prompt. The model will then:\n    \n    - Incorporate the function result\n        \n    - Generate a final, user-friendly response using both the original query and the function output.\n\n--- \n\n## Function Declarations\nWhen you implement function calling in a prompt, you create a tools object, which contains one or more function declarations. You define functions using JSON that can include the following parameters:\n\nname (string): A unique name for the function (get_weather_forecast, send_email). Use descriptive names without spaces or special characters (use underscores or camelCase).\ndescription (string): A clear and detailed explanation of the function's purpose and capabilities. This is crucial for the model to understand when to use the function. Be specific and provide examples if helpful (\"Finds theaters based on location and optionally movie title which is currently playing in theaters.\").\nparameters (object): Defines the input parameters the function expects.\ntype (string): Specifies the overall data type, such as object.\nproperties (object): Lists individual parameters, each with:\ntype (string): The data type of the parameter, such as string, integer, boolean, array.\ndescription (string): A description of the parameter's purpose and format. Provide examples and constraints (\"The city and state, e.g., 'San Francisco, CA' or a zip code e.g., '95616'.\").\nenum (array, optional): If the parameter values are from a fixed set, use \"enum\" to list the allowed values instead of just describing them in the description. This improves accuracy (\"enum\": [\"daylight\", \"cool\", \"warm\"]).\nrequired (array): An array of strings listing the parameter names that are mandatory for the function to operate.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Model Call With Function Declarations",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b9c05863-49c4-4f57-819a-7d06c98aa35a",
+						"exec": [
+							"pm.test(\"FunctionCall structure and arguments are valid\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData.candidates).to.be.an('array');",
+							"",
+							"    responseData.candidates.forEach(function(candidate) {",
+							"        pm.expect(candidate).to.have.property('content');",
+							"        pm.expect(candidate.content).to.be.an('object');",
+							"",
+							"        pm.expect(candidate.content).to.have.property('parts');",
+							"        pm.expect(candidate.content.parts).to.be.an('array');",
+							"",
+							"        candidate.content.parts.forEach(function(part) {",
+							"            pm.expect(part).to.be.an('object');",
+							"            pm.expect(part).to.have.property('functionCall');",
+							"",
+							"            const functionCall = part.functionCall;",
+							"            pm.expect(functionCall).to.have.property('name');",
+							"            pm.expect(functionCall.name).to.be.a('string');",
+							"",
+							"            pm.expect(functionCall).to.have.property('args');",
+							"            pm.expect(functionCall.args).to.be.an('object');",
+							"        });",
+							"",
+							"        pm.expect(candidate.content).to.have.property('role');",
+							"        pm.expect(candidate.content.role).to.be.a('string');",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "de43c0ac-7c90-4d01-a869-d51a5e16af08",
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "a261c9b8-d86f-4a15-9468-5c47fbd319bc",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"contents\": {\n        \"role\": \"user\",\n        \"parts\": {\n            \"text\": \"Which theaters in Mountain View show Barbie movie?\"\n        }\n    },\n    \"tools\": [\n        {\n            \"function_declarations\": [\n                {\n                    \"name\": \"find_movies\",\n                    \"description\": \"find movie titles currently playing in theaters based on any description, genre, title words, etc\",\n                    \"parameters\": {\n                        \"type\": \"object\",\n                        \"properties\": {\n                            \"location\": {\n                                \"type\": \"string\",\n                                \"description\": \"The city and state, e.g. San Francisco, CA or a zip code e.g. 95616\"\n                            },\n                            \"description\": {\n                                \"type\": \"string\",\n                                \"description\": \"Any kind of description including category or genre, title words, attributes, etc.\"\n                            }\n                        },\n                        \"required\": [\n                            \"description\"\n                        ]\n                    }\n                },\n                {\n                    \"name\": \"find_theaters\",\n                    \"description\": \"find theaters based on location and optionally movie title which is currently playing in theaters\",\n                    \"parameters\": {\n                        \"type\": \"object\",\n                        \"properties\": {\n                            \"location\": {\n                                \"type\": \"string\",\n                                \"description\": \"The city and state, e.g. San Francisco, CA or a zip code e.g. 95616\"\n                            },\n                            \"movie\": {\n                                \"type\": \"string\",\n                                \"description\": \"Any movie title\"\n                            }\n                        },\n                        \"required\": [\n                            \"location\"\n                        ]\n                    }\n                },\n                {\n                    \"name\": \"get_showtimes\",\n                    \"description\": \"Find the start times for movies playing in a specific theater\",\n                    \"parameters\": {\n                        \"type\": \"object\",\n                        \"properties\": {\n                            \"location\": {\n                                \"type\": \"string\",\n                                \"description\": \"The city and state, e.g. San Francisco, CA or a zip code e.g. 95616\"\n                            },\n                            \"movie\": {\n                                \"type\": \"string\",\n                                \"description\": \"Any movie title\"\n                            },\n                            \"theater\": {\n                                \"type\": \"string\",\n                                \"description\": \"Name of the theater\"\n                            },\n                            \"date\": {\n                                \"type\": \"string\",\n                                \"description\": \"Date for requested showtime\"\n                            }\n                        },\n                        \"required\": [\n                            \"location\",\n                            \"movie\",\n                            \"theater\",\n                            \"date\"\n                        ]\n                    }\n                }\n            ]\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseUrl}}/{{apiVersion}}/models/{{model}}:generateContent",
+				"description": "# Model Call With Function Declarations\n\nOnce you have defined your function declarations, you can prompt the model to use them. It analyzes the prompt and function declarations and decides whether to respond directly or to call a function. If a function is called, the response object will contain a function call suggestion."
+			},
+			"response": [
+				{
+					"id": "bfecb37d-63ca-4f08-99ff-b3dac424fe27",
+					"name": "Model Call With Function Declarations",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"contents\": {\n        \"role\": \"user\",\n        \"parts\": {\n            \"text\": \"Which theaters in Mountain View show Barbie movie?\"\n        }\n    },\n    \"tools\": [\n        {\n            \"function_declarations\": [\n                {\n                    \"name\": \"find_movies\",\n                    \"description\": \"find movie titles currently playing in theaters based on any description, genre, title words, etc\",\n                    \"parameters\": {\n                        \"type\": \"object\",\n                        \"properties\": {\n                            \"location\": {\n                                \"type\": \"string\",\n                                \"description\": \"The city and state, e.g. San Francisco, CA or a zip code e.g. 95616\"\n                            },\n                            \"description\": {\n                                \"type\": \"string\",\n                                \"description\": \"Any kind of description including category or genre, title words, attributes, etc.\"\n                            }\n                        },\n                        \"required\": [\n                            \"description\"\n                        ]\n                    }\n                },\n                {\n                    \"name\": \"find_theaters\",\n                    \"description\": \"find theaters based on location and optionally movie title which is currently playing in theaters\",\n                    \"parameters\": {\n                        \"type\": \"object\",\n                        \"properties\": {\n                            \"location\": {\n                                \"type\": \"string\",\n                                \"description\": \"The city and state, e.g. San Francisco, CA or a zip code e.g. 95616\"\n                            },\n                            \"movie\": {\n                                \"type\": \"string\",\n                                \"description\": \"Any movie title\"\n                            }\n                        },\n                        \"required\": [\n                            \"location\"\n                        ]\n                    }\n                },\n                {\n                    \"name\": \"get_showtimes\",\n                    \"description\": \"Find the start times for movies playing in a specific theater\",\n                    \"parameters\": {\n                        \"type\": \"object\",\n                        \"properties\": {\n                            \"location\": {\n                                \"type\": \"string\",\n                                \"description\": \"The city and state, e.g. San Francisco, CA or a zip code e.g. 95616\"\n                            },\n                            \"movie\": {\n                                \"type\": \"string\",\n                                \"description\": \"Any movie title\"\n                            },\n                            \"theater\": {\n                                \"type\": \"string\",\n                                \"description\": \"Name of the theater\"\n                            },\n                            \"date\": {\n                                \"type\": \"string\",\n                                \"description\": \"Date for requested showtime\"\n                            }\n                        },\n                        \"required\": [\n                            \"location\",\n                            \"movie\",\n                            \"theater\",\n                            \"date\"\n                        ]\n                    }\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/{{apiVersion}}/models/{{model}}:generateContent"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "X-Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Referer"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "gzip"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 02 Jul 2025 09:59:14 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "scaffolding on HTTPServer2"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Server-Timing",
+							"value": "gfet4t7; dur=396"
+						},
+						{
+							"key": "Alt-Svc",
+							"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"responseTime": null,
+					"body": "{\n    \"candidates\": [\n        {\n            \"content\": {\n                \"parts\": [\n                    {\n                        \"functionCall\": {\n                            \"name\": \"find_theaters\",\n                            \"args\": {\n                                \"movie\": \"Barbie\",\n                                \"location\": \"Mountain View, CA\"\n                            }\n                        }\n                    }\n                ],\n                \"role\": \"model\"\n            },\n            \"finishReason\": \"STOP\",\n            \"index\": 0\n        }\n    ],\n    \"usageMetadata\": {\n        \"promptTokenCount\": 319,\n        \"candidatesTokenCount\": 25,\n        \"totalTokenCount\": 344,\n        \"promptTokensDetails\": [\n            {\n                \"modality\": \"TEXT\",\n                \"tokenCount\": 319\n            }\n        ]\n    },\n    \"modelVersion\": \"gemini-2.5-flash-lite-preview-06-17\",\n    \"responseId\": \"8gJlaJKSNePgnsEP-vGOqAU\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Model Call With Function Result",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "aaaa9c1a-9400-4d0d-9f74-c496bba14067",
+						"exec": [
+							"pm.test(\"Candidates array, content object, parts array, and role field structure are valid\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData.candidates).to.be.an('array');",
+							"    ",
+							"    responseData.candidates.forEach(function(candidate) {",
+							"        pm.expect(candidate.content).to.be.an('object');",
+							"        ",
+							"        candidate.content.parts.forEach(function(part) {",
+							"            pm.expect(part).to.be.an('object');",
+							"        });",
+							"        ",
+							"        pm.expect(candidate.content.role).to.be.a('string');",
+							"    });",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "220c2182-0558-4552-a7f0-7e61707f945e",
+						"exec": [],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "76caaf0f-cf96-417b-93af-5dc63c2ce885",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"contents\": [\n        {\n            \"role\": \"user\",\n            \"parts\": [\n                {\n                    \"text\": \"Which theaters in Mountain View show Barbie movie?\"\n                }\n            ]\n        },\n        {\n            \"role\": \"model\",\n            \"parts\": [\n                {\n                    \"functionCall\": {\n                        \"name\": \"find_theaters\",\n                        \"args\": {\n                            \"location\": \"Mountain View, CA\",\n                            \"movie\": \"Barbie\"\n                        }\n                    }\n                }\n            ]\n        },\n        {\n            \"role\": \"function\",\n            \"parts\": [\n                {\n                    \"functionResponse\": {\n                        \"name\": \"find_theaters\",\n                        \"response\": {\n                            \"name\": \"find_theaters\",\n                            \"content\": {\n                                \"movie\": \"Barbie\",\n                                \"theaters\": [\n                                    {\n                                        \"name\": \"AMC Mountain View 16\",\n                                        \"address\": \"2000 W El Camino Real, Mountain View, CA 94040\"\n                                    },\n                                    {\n                                        \"name\": \"Regal Edwards 14\",\n                                        \"address\": \"245 Castro St, Mountain View, CA 94040\"\n                                    }\n                                ]\n                            }\n                        }\n                    }\n                }\n            ]\n        }\n    ],\n    \"tools\": [\n        {\n            \"functionDeclarations\": [\n                {\n                    \"name\": \"find_movies\",\n                    \"description\": \"find movie titles currently playing in theaters based on any description, genre, title words, etc.\",\n                    \"parameters\": {\n                        \"type\": \"OBJECT\",\n                        \"properties\": {\n                            \"location\": {\n                                \"type\": \"STRING\",\n                                \"description\": \"The city and state, e.g. San Francisco, CA or a zip code e.g. 95616\"\n                            },\n                            \"description\": {\n                                \"type\": \"STRING\",\n                                \"description\": \"Any kind of description including category or genre, title words, attributes, etc.\"\n                            }\n                        },\n                        \"required\": [\n                            \"description\"\n                        ]\n                    }\n                },\n                {\n                    \"name\": \"find_theaters\",\n                    \"description\": \"find theaters based on location and optionally movie title which is currently playing in theaters\",\n                    \"parameters\": {\n                        \"type\": \"OBJECT\",\n                        \"properties\": {\n                            \"location\": {\n                                \"type\": \"STRING\",\n                                \"description\": \"The city and state, e.g. San Francisco, CA or a zip code e.g. 95616\"\n                            },\n                            \"movie\": {\n                                \"type\": \"STRING\",\n                                \"description\": \"Any movie title\"\n                            }\n                        },\n                        \"required\": [\n                            \"location\"\n                        ]\n                    }\n                },\n                {\n                    \"name\": \"get_showtimes\",\n                    \"description\": \"Find the start times for movies playing in a specific theater\",\n                    \"parameters\": {\n                        \"type\": \"OBJECT\",\n                        \"properties\": {\n                            \"location\": {\n                                \"type\": \"STRING\",\n                                \"description\": \"The city and state, e.g. San Francisco, CA or a zip code e.g. 95616\"\n                            },\n                            \"movie\": {\n                                \"type\": \"STRING\",\n                                \"description\": \"Any movie title\"\n                            },\n                            \"theater\": {\n                                \"type\": \"STRING\",\n                                \"description\": \"Name of the theater\"\n                            },\n                            \"date\": {\n                                \"type\": \"STRING\",\n                                \"description\": \"Date for requested showtime\"\n                            }\n                        },\n                        \"required\": [\n                            \"location\",\n                            \"movie\",\n                            \"theater\",\n                            \"date\"\n                        ]\n                    }\n                }\n            ]\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseUrl}}/{{apiVersion}}/models/{{model}}:generateContent",
+				"description": "# Model Call With Function Result\n\nExtract the function call details from the model's response, parse the arguments , and execute the specified function.\nFinally, send the result of the function execution back to the model so it can incorporate this information into its final response to the user."
+			},
+			"response": [
+				{
+					"id": "fb4dfb58-e9cb-4f72-887e-724e53a55763",
+					"name": "Model Call With Function Result",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"contents\": [\n        {\n            \"role\": \"user\",\n            \"parts\": [\n                {\n                    \"text\": \"Which theaters in Mountain View show Barbie movie?\"\n                }\n            ]\n        },\n        {\n            \"role\": \"model\",\n            \"parts\": [\n                {\n                    \"functionCall\": {\n                        \"name\": \"find_theaters\",\n                        \"args\": {\n                            \"location\": \"Mountain View, CA\",\n                            \"movie\": \"Barbie\"\n                        }\n                    }\n                }\n            ]\n        },\n        {\n            \"role\": \"function\",\n            \"parts\": [\n                {\n                    \"functionResponse\": {\n                        \"name\": \"find_theaters\",\n                        \"response\": {\n                            \"name\": \"find_theaters\",\n                            \"content\": {\n                                \"movie\": \"Barbie\",\n                                \"theaters\": [\n                                    {\n                                        \"name\": \"AMC Mountain View 16\",\n                                        \"address\": \"2000 W El Camino Real, Mountain View, CA 94040\"\n                                    },\n                                    {\n                                        \"name\": \"Regal Edwards 14\",\n                                        \"address\": \"245 Castro St, Mountain View, CA 94040\"\n                                    }\n                                ]\n                            }\n                        }\n                    }\n                }\n            ]\n        }\n    ],\n    \"tools\": [\n        {\n            \"functionDeclarations\": [\n                {\n                    \"name\": \"find_movies\",\n                    \"description\": \"find movie titles currently playing in theaters based on any description, genre, title words, etc.\",\n                    \"parameters\": {\n                        \"type\": \"OBJECT\",\n                        \"properties\": {\n                            \"location\": {\n                                \"type\": \"STRING\",\n                                \"description\": \"The city and state, e.g. San Francisco, CA or a zip code e.g. 95616\"\n                            },\n                            \"description\": {\n                                \"type\": \"STRING\",\n                                \"description\": \"Any kind of description including category or genre, title words, attributes, etc.\"\n                            }\n                        },\n                        \"required\": [\n                            \"description\"\n                        ]\n                    }\n                },\n                {\n                    \"name\": \"find_theaters\",\n                    \"description\": \"find theaters based on location and optionally movie title which is currently playing in theaters\",\n                    \"parameters\": {\n                        \"type\": \"OBJECT\",\n                        \"properties\": {\n                            \"location\": {\n                                \"type\": \"STRING\",\n                                \"description\": \"The city and state, e.g. San Francisco, CA or a zip code e.g. 95616\"\n                            },\n                            \"movie\": {\n                                \"type\": \"STRING\",\n                                \"description\": \"Any movie title\"\n                            }\n                        },\n                        \"required\": [\n                            \"location\"\n                        ]\n                    }\n                },\n                {\n                    \"name\": \"get_showtimes\",\n                    \"description\": \"Find the start times for movies playing in a specific theater\",\n                    \"parameters\": {\n                        \"type\": \"OBJECT\",\n                        \"properties\": {\n                            \"location\": {\n                                \"type\": \"STRING\",\n                                \"description\": \"The city and state, e.g. San Francisco, CA or a zip code e.g. 95616\"\n                            },\n                            \"movie\": {\n                                \"type\": \"STRING\",\n                                \"description\": \"Any movie title\"\n                            },\n                            \"theater\": {\n                                \"type\": \"STRING\",\n                                \"description\": \"Name of the theater\"\n                            },\n                            \"date\": {\n                                \"type\": \"STRING\",\n                                \"description\": \"Date for requested showtime\"\n                            }\n                        },\n                        \"required\": [\n                            \"location\",\n                            \"movie\",\n                            \"theater\",\n                            \"date\"\n                        ]\n                    }\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{baseUrl}}/{{apiVersion}}/models/{{model}}:generateContent"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "X-Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Referer"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "gzip"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 02 Jul 2025 10:27:43 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "scaffolding on HTTPServer2"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Server-Timing",
+							"value": "gfet4t7; dur=505"
+						},
+						{
+							"key": "Alt-Svc",
+							"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"responseTime": null,
+					"body": "{\n    \"candidates\": [\n        {\n            \"content\": {\n                \"parts\": [\n                    {\n                        \"text\": \"There are two theaters that show Barbie in Mountain View: AMC Mountain View 16 and Regal Edwards 14.\"\n                    }\n                ],\n                \"role\": \"model\"\n            },\n            \"finishReason\": \"STOP\",\n            \"index\": 0\n        }\n    ],\n    \"usageMetadata\": {\n        \"promptTokenCount\": 446,\n        \"candidatesTokenCount\": 24,\n        \"totalTokenCount\": 470,\n        \"promptTokensDetails\": [\n            {\n                \"modality\": \"TEXT\",\n                \"tokenCount\": 446\n            }\n        ]\n    },\n    \"modelVersion\": \"gemini-2.5-flash-lite-preview-06-17\",\n    \"responseId\": \"nwllaOeEM5Paxs0P3NmiSA\"\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": {
+			"in": "query",
+			"value": "{{vault:geminiApi}}",
+			"key": "key"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "48938749-1f45-4a35-ab09-0058b87a7121",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "7d13e13a-12c7-42da-a8b8-9c9ab576c0c7",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"pm.test(\"Response status code is 200\", function () {",
+					"    pm.response.to.have.status(200);",
+					"});",
+					"",
+					"pm.test(\"Response Content-Type is application/json\", function () {",
+					"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "model",
+			"value": "gemini-2.5-flash-lite-preview-06-17",
+			"type": "string"
+		}
+	]
+}
