@@ -40,8 +40,8 @@
 				"auth": {
 					"type": "apikey",
 					"apikey": {
-						"value": "{{vault:geminiApi}}",
 						"in": "query",
+						"value": "{{vault:geminiApi}}",
 						"key": "key"
 					}
 				},
