@@ -149,7 +149,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "d833baf6-2ca5-4c4a-84c0-7df4405b1acf",
+				"id": "bb4f463c-63ab-4a22-b424-011a38154ee0",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -160,7 +160,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "11333ee2-ee8b-4c9d-b2c4-b06561a79062",
+				"id": "9a7d7f87-683f-4eff-a29a-7e7910595cc5",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -204,13 +204,6 @@
 					"});"
 				]
 			}
-		}
-	],
-	"variable": [
-		{
-			"key": "model",
-			"value": "gemini-2.5-flash-lite-preview-06-17",
-			"type": "string"
 		}
 	]
 }
