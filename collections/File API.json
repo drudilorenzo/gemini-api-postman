@@ -1,0 +1,664 @@
+{
+	"info": {
+		"_postman_id": "4d9eb4ff-90b8-4268-b05f-88a526e34fbe",
+		"name": "File API",
+		"description": "## PDF Upload and Processing with the Gemini API\n\nThe Gemini API supports flexible ways to handle documents, especially PDFs. You can upload media files separately from prompt inputs, enabling file reuse across multiple prompts and requests.\n\n🔗 **Official Documentation**: [File API](https://ai.google.dev/gemini-api/docs/document-processing)\n\n---\n\n### 📄 Passing Inline PDF Data\n\nFor PDF payloads **under 20MB**, you can:\n\n- Pass **Base64-encoded** documents inline.\n- Or directly upload **locally stored files** inline with your request to `generateContent`.\n\n---\n\n### 📁 Uploading PDFs with the File API\n\nFor **documents larger than 20MB**, use the **File API**:\n\n- Upload files up to **50MB**.\n- Files are stored for **48 hours** and accessible via your API key.\n- Files **cannot be downloaded** after upload.\n- Available at **no cost** in all supported regions.\n",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "45478362-4d9eb4ff-90b8-4268-b05f-88a526e34fbe"
+	},
+	"item": [
+		{
+			"name": "Upload Request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3e5e8b5d-b612-4490-b021-f3f88b9aa6c9",
+						"exec": [
+							"var uploadUrl = pm.response.headers.get('x-goog-upload-url');",
+							"pm.collectionVariables.set(\"UPLOAD_URL\", uploadUrl);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6b17f88c-4c64-4003-b81b-a9233481fb61",
+						"exec": [],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "9c066595-e7c5-48d4-b680-a397ad2c7550",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{vault:geminiApi}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "key",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Goog-Upload-Header-Content-Type",
+						"value": "application/pdf",
+						"type": "text"
+					},
+					{
+						"key": "X-Goog-Upload-Command",
+						"value": "start",
+						"type": "text"
+					},
+					{
+						"key": "X-Goog-Upload-Protocol",
+						"value": "resumable",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"file\": {\n        \"display_name\": \"test.pdf\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/upload/{{apiVersion}}/files",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"upload",
+						"{{apiVersion}}",
+						"files"
+					]
+				},
+				"description": "**Initial resumable request**  \nDefines the file metadata and returns an **upload URL** (contained in the response header).  \nUse this URL to perform the actual file upload."
+			},
+			"response": [
+				{
+					"id": "a99a4c5f-38dc-4d38-ab2d-d6c34fc49479",
+					"name": "Upload Request",
+					"originalRequest": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "in",
+									"value": "query",
+									"type": "string"
+								},
+								{
+									"key": "value",
+									"value": "{{vault:geminiApi}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Goog-Upload-Header-Content-Type",
+								"value": "application/pdf",
+								"type": "text"
+							},
+							{
+								"key": "X-Goog-Upload-Command",
+								"value": "start",
+								"type": "text"
+							},
+							{
+								"key": "X-Goog-Upload-Protocol",
+								"value": "resumable",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"file\": {\n        \"display_name\": \"test.pdf\"\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/upload/{{apiVersion}}/files",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"upload",
+								"{{apiVersion}}",
+								"files"
+							]
+						},
+						"description": "**Initial resumable request**  \nDefines the file metadata and returns an **upload URL** (contained in the response header).  \nUse this URL to perform the actual file upload."
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "text/plain; charset=utf-8"
+						},
+						{
+							"key": "X-GUploader-UploadID",
+							"value": "ABgVH88KzsB4L_w5Y84mR0H_yBLVDCav_nIgo8P3IoQso7JG4eXbfmRf1XTLGsuB_qNzlvO7QPzalXu0ZllI7RtiVDKDW7PUxWgjonvhY4mKIA"
+						},
+						{
+							"key": "X-Goog-Upload-Status",
+							"value": "active"
+						},
+						{
+							"key": "X-Goog-Upload-URL",
+							"value": "https://generativelanguage.googleapis.com/upload/v1beta/files?key={{vault:google-api-key}}&upload_id=ABgVH88KzsB4L_w5Y84mR0H_yBLVDCav_nIgo8P3IoQso7JG4eXbfmRf1XTLGsuB_qNzlvO7QPzalXu0ZllI7RtiVDKDW7PUxWgjonvhY4mKIA&upload_protocol=resumable"
+						},
+						{
+							"key": "X-Goog-Upload-Control-URL",
+							"value": "https://generativelanguage.googleapis.com/upload/v1beta/files?key={{vault:google-api-key}}&upload_id=ABgVH88KzsB4L_w5Y84mR0H_yBLVDCav_nIgo8P3IoQso7JG4eXbfmRf1XTLGsuB_qNzlvO7QPzalXu0ZllI7RtiVDKDW7PUxWgjonvhY4mKIA&upload_protocol=resumable"
+						},
+						{
+							"key": "X-Goog-Upload-Chunk-Granularity",
+							"value": "8388608"
+						},
+						{
+							"key": "X-Goog-Upload-Header-x-google-esf-cloud-client-params",
+							"value": "backend_service_name: \"generativelanguage.googleapis.com\" backend_fully_qualified_method: \"google.ai.generativelanguage.v1beta.FileService.CreateFile\""
+						},
+						{
+							"key": "X-Goog-Upload-Header-X-Google-Session-Info",
+							"value": "GgQYECgLIAE6IxIhZ2VuZXJhdGl2ZWxhbmd1YWdlLmdvb2dsZWFwaXMuY29t"
+						},
+						{
+							"key": "X-Goog-Upload-Header-X-Google-Backends",
+							"value": "unix:/tmp/esfbackend.1752484044.69709.333697"
+						},
+						{
+							"key": "X-Goog-Upload-Header-Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "X-Goog-Upload-Header-X-Google-Security-Signals",
+							"value": "FRAMEWORK=ONE_PLATFORM,ENV=borg,ENV_DEBUG=borg_user:genai-api;borg_job:prod.genai-api"
+						},
+						{
+							"key": "X-Goog-Upload-Header-Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "X-Goog-Upload-Header-Vary",
+							"value": "X-Origin"
+						},
+						{
+							"key": "X-Goog-Upload-Header-Vary",
+							"value": "Referer"
+						},
+						{
+							"key": "X-Goog-Upload-Header-X-Google-GFE-Backend-Request-Cost",
+							"value": "28.0783"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 14 Jul 2025 13:17:13 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "UploadServer"
+						},
+						{
+							"key": "Alt-Svc",
+							"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+						}
+					],
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Upload Document",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3edf37c6-3c22-4f3a-9376-383da3d9be11",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"FILE_URI\", jsonData.file.uri);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "abe4c7b8-d461-457b-8552-e51a0bf54f09",
+						"exec": [],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "7778f449-33ff-4073-a2f6-281ef379f2c1",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{vault:geminiApi}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "key",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Goog-Upload-Command",
+						"value": "upload, finalize",
+						"type": "text"
+					},
+					{
+						"key": "X-Goog-Upload-Offset",
+						"value": "0",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "file",
+					"file": {
+						"src": "postman-cloud:///1f060b3a-16d6-4940-8bc6-9540d2cc55d0"
+					}
+				},
+				"url": {
+					"raw": "{{UPLOAD_URL}}",
+					"host": [
+						"{{UPLOAD_URL}}"
+					]
+				},
+				"description": "**Upload the file bytes** using the `uploadUrl` returned in the response header.  \nRefer to the test scripts for usage examples."
+			},
+			"response": [
+				{
+					"id": "437776e2-0b3e-482b-8d49-8632f3ccf968",
+					"name": "Upload Document",
+					"originalRequest": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "in",
+									"value": "query",
+									"type": "string"
+								},
+								{
+									"key": "value",
+									"value": "{{vault:geminiApi}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Goog-Upload-Command",
+								"value": "upload, finalize",
+								"type": "text"
+							},
+							{
+								"key": "X-Goog-Upload-Offset",
+								"value": "0",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "file",
+							"file": {
+								"src": "postman-cloud:///1f060b3a-16d6-4940-8bc6-9540d2cc55d0"
+							}
+						},
+						"url": {
+							"raw": "{{UPLOAD_URL}}",
+							"host": [
+								"{{UPLOAD_URL}}"
+							]
+						},
+						"description": "**Upload the file bytes** using the `uploadUrl` returned in the response header.  \nRefer to the test scripts for usage examples."
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "X-GUploader-UploadID",
+							"value": "ABgVH88KzsB4L_w5Y84mR0H_yBLVDCav_nIgo8P3IoQso7JG4eXbfmRf1XTLGsuB_qNzlvO7QPzalXu0ZllI7RtiVDKDW7PUxWgjonvhY4mKIA"
+						},
+						{
+							"key": "X-Goog-Upload-Status",
+							"value": "final"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "X-Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Referer"
+						},
+						{
+							"key": "Content-Length",
+							"value": "541"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 14 Jul 2025 13:17:19 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "UploadServer"
+						},
+						{
+							"key": "Alt-Svc",
+							"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"file\": {\n        \"name\": \"files/qgr9j4gc3mik\",\n        \"displayName\": \"test.pdf\",\n        \"mimeType\": \"application/pdf\",\n        \"sizeBytes\": \"271145\",\n        \"createTime\": \"2025-07-14T13:17:19.576390Z\",\n        \"updateTime\": \"2025-07-14T13:17:19.576390Z\",\n        \"expirationTime\": \"2025-07-16T13:17:19.507593201Z\",\n        \"sha256Hash\": \"ZGI5NTA4ZDZmNmUxZGE2ZGRhNWVkNGFjMDFkZTNmMzA5ZDFmNTg0MDdiOGQ2ZWI5MDgwYmIzMzM5YWU0ZDI2Yg==\",\n        \"uri\": \"https://generativelanguage.googleapis.com/v1beta/files/qgr9j4gc3mik\",\n        \"state\": \"ACTIVE\",\n        \"source\": \"UPLOADED\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Summarize Document",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "db4202e0-c1f6-4c03-b5d5-108deb058eee",
+						"exec": [
+							"pm.test(\"Verify the presence and format of 'usageMetadata' object and its properties\", function () {",
+							"    const responseData = pm.response.json();",
+							"",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.usageMetadata).to.exist.and.to.be.an('object');",
+							"    pm.expect(responseData.usageMetadata.promptTokenCount).to.exist.and.to.be.a('number');",
+							"    pm.expect(responseData.usageMetadata.candidatesTokenCount).to.exist.and.to.be.a('number');",
+							"    pm.expect(responseData.usageMetadata.totalTokenCount).to.exist.and.to.be.a('number');",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "0cf20bb3-82fb-4f56-9051-d2a4cf25fc19",
+						"exec": [],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "2ee75014-3f23-4d84-95eb-49aeb1e1ae90",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "in",
+							"value": "query",
+							"type": "string"
+						},
+						{
+							"key": "value",
+							"value": "{{vault:geminiApi}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "key",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"contents\": [\n        {\n            \"parts\": [\n                {\n                    \"text\": \"Summarize the uploaded document.\"\n                },\n                {\n                    \"file_data\": {\n                        \"mime_type\": \"application/pdf\",\n                        \"file_uri\": \"{{FILE_URI}}\"\n                    }\n                }\n            ]\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/{{apiVersion}}/models/{{model}}:generateContent",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{apiVersion}}",
+						"models",
+						"{{model}}:generateContent"
+					]
+				},
+				"description": "**Summarize uploaded documents**"
+			},
+			"response": [
+				{
+					"id": "d5ada3f1-f88a-4806-958c-9758ccd7e4fa",
+					"name": "Summarize Document",
+					"originalRequest": {
+						"auth": {
+							"type": "apikey",
+							"apikey": [
+								{
+									"key": "in",
+									"value": "query",
+									"type": "string"
+								},
+								{
+									"key": "value",
+									"value": "{{vault:geminiApi}}",
+									"type": "string"
+								},
+								{
+									"key": "key",
+									"value": "key",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"contents\": [\n        {\n            \"parts\": [\n                {\n                    \"text\": \"Summarize the uploaded document.\"\n                },\n                {\n                    \"file_data\": {\n                        \"mime_type\": \"application/pdf\",\n                        \"file_uri\": \"{{FILE_URI}}\"\n                    }\n                }\n            ]\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/{{apiVersion}}/models/{{model}}:generateContent",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"{{apiVersion}}",
+								"models",
+								"{{model}}:generateContent"
+							]
+						},
+						"description": "**Summarize uploaded documents**"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=UTF-8"
+						},
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "X-Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Referer"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "gzip"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 14 Jul 2025 13:17:28 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "scaffolding on HTTPServer2"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "Server-Timing",
+							"value": "gfet4t7; dur=4212"
+						},
+						{
+							"key": "Alt-Svc",
+							"value": "h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"candidates\": [\n        {\n            \"content\": {\n                \"parts\": [\n                    {\n                        \"text\": \"This document is a project proposal for \\\"Develop a Gemini Workspace in Postman\\\" for GSoC 2025. The proposal outlines the plan to create a Postman workspace that simplifies interaction with Google's Gemini APIs.\\n\\nHere's a summary of the key points:\\n\\n*   **Project Goal:** To develop a Postman Workspace that allows developers to easily explore, test, and integrate with Gemini's AI APIs. This will be achieved by providing pre-built API collections, pre-configured environments, automated testing, and comprehensive documentation.\\n\\n*   **Applicant's Information:** The applicant is Lorenzo Drudi, an MSc Computer Science student at EPFL, with a background in software engineering, distributed systems, and AI. They have relevant experience in REST API development, LLMs, and GitHub Actions from previous internships and academic projects.\\n\\n*   **Motivation:** The project aligns with the applicant's passion for developing developer-friendly tools and improving developer experience with APIs. Their prior experience with REST APIs, LLMs, and CI/CD workflows makes them a suitable candidate.\\n\\n*   **Goals:** The project aims to achieve several key objectives:\\n    *   Develop a structured Postman workspace for Gemini APIs, including collections for text, chat, image, and code generation, with detailed documentation.\\n    *   Implement pre-configured environments for testing and production, with clear instructions for authentication.\\n    *   Enhance developer experience through integrated documentation and tutorials.\\n    *   Implement automated testing and mocking for API responses to ensure correctness and facilitate local development.\\n    *   Automate workspace maintenance using GitHub Actions to keep it synchronized with Gemini API updates.\\n    *   Optimize the workspace for ease of use and scalability, incorporating user feedback.\\n\\n*   **Technical Details:** The project will utilize Postman as the core tool, integrating with Gemini APIs. JavaScript will be used for test scripts and GitHub Actions. Mock servers will be employed for local testing. Key functionalities include API collections, pre-configured environments, integrated documentation, and testing/mocking capabilities.\\n\\n*   **Challenges and Solutions:** Potential challenges include API rate limits (addressed by mock servers), complex API responses (handled by test scripts), keeping collections up-to-date (managed by GitHub Actions), and ensuring documentation/code integration (using Postman's built-in features).\\n\\n*   **Test Plan:** A comprehensive testing strategy will be implemented, covering API request validation, authentication and environment testing, error handling and edge cases, mock server testing, GitHub Action testing, and user feedback/continuous testing.\\n\\n*   **Deliverables:** The project is broken down into several deliverables with estimated time commitments, including workspace setup and API collections (80h), environment configuration and authentication (60h), documentation and tutorials (100h), testing and mocking (60h), and GitHub Action for automation (50h), totaling 350 hours.\"\n                    }\n                ],\n                \"role\": \"model\"\n            },\n            \"finishReason\": \"STOP\",\n            \"index\": 0\n        }\n    ],\n    \"usageMetadata\": {\n        \"promptTokenCount\": 2070,\n        \"candidatesTokenCount\": 603,\n        \"totalTokenCount\": 2673,\n        \"promptTokensDetails\": [\n            {\n                \"modality\": \"TEXT\",\n                \"tokenCount\": 6\n            },\n            {\n                \"modality\": \"DOCUMENT\",\n                \"tokenCount\": 2064\n            }\n        ]\n    },\n    \"modelVersion\": \"gemini-2.5-flash-lite-preview-06-17\",\n    \"responseId\": \"aAN1aJe7CbfMkdUPseOMoQw\"\n}"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "45994a6d-17f4-445f-bfdb-313a89feb7cb",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "e53be6ac-848e-4138-8a98-80d7b2910e04",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"pm.test(\"Response status code is 200\", function () {",
+					"  pm.response.to.have.status(200);",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "0ca7d0de-21e3-47e6-8e3b-a974e7e091c3",
+			"key": "UPLOAD_URL",
+			"value": ""
+		},
+		{
+			"id": "1d1b1e9f-40d0-41d8-b6b3-37f212555b5d",
+			"key": "model",
+			"value": "gemini-2.5-flash-lite-preview-06-17",
+			"type": "string"
+		},
+		{
+			"id": "39e9505c-6f41-4f21-b1d3-603a389a7525",
+			"key": "FILE_URI",
+			"value": ""
+		}
+	]
+}
