@@ -38,26 +38,6 @@
 				"disableBodyPruning": true
 			},
 			"request": {
-				"auth": {
-					"type": "apikey",
-					"apikey": [
-						{
-							"key": "in",
-							"value": "query",
-							"type": "string"
-						},
-						{
-							"key": "value",
-							"value": "{{vault:geminiApi}}",
-							"type": "string"
-						},
-						{
-							"key": "key",
-							"value": "key",
-							"type": "string"
-						}
-					]
-				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -91,8 +71,8 @@
 							"type": "apikey",
 							"apikey": [
 								{
-									"key": "in",
-									"value": "query",
+									"key": "key",
+									"value": "key",
 									"type": "string"
 								},
 								{
@@ -101,8 +81,8 @@
 									"type": "string"
 								},
 								{
-									"key": "key",
-									"value": "key",
+									"key": "in",
+									"value": "query",
 									"type": "string"
 								}
 							]
@@ -200,26 +180,6 @@
 				"disableBodyPruning": true
 			},
 			"request": {
-				"auth": {
-					"type": "apikey",
-					"apikey": [
-						{
-							"key": "in",
-							"value": "query",
-							"type": "string"
-						},
-						{
-							"key": "value",
-							"value": "{{vault:geminiApi}}",
-							"type": "string"
-						},
-						{
-							"key": "key",
-							"value": "key",
-							"type": "string"
-						}
-					]
-				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -253,8 +213,8 @@
 							"type": "apikey",
 							"apikey": [
 								{
-									"key": "in",
-									"value": "query",
+									"key": "key",
+									"value": "key",
 									"type": "string"
 								},
 								{
@@ -263,8 +223,8 @@
 									"type": "string"
 								},
 								{
-									"key": "key",
-									"value": "key",
+									"key": "in",
+									"value": "query",
 									"type": "string"
 								}
 							]
@@ -356,11 +316,31 @@
 			]
 		}
 	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "in",
+				"value": "query",
+				"type": "string"
+			},
+			{
+				"key": "value",
+				"value": "{{geminiKey}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "key",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "96513e4d-b2df-45cf-b3a4-095262690bae",
+				"id": "d60d2c30-1984-4447-b9dc-4fd776cda35f",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -371,7 +351,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "ac9a09d8-9022-4d1b-9851-c311f782a5d4",
+				"id": "56971ab6-0aab-449d-aa7f-6742eb8f00ca",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -412,13 +392,14 @@
 	],
 	"variable": [
 		{
-			"id": "dbaf698e-43bd-407a-85f8-3240b12835c2",
+			"id": "a2925a8a-064c-4c6e-8786-d2fe54994e47",
 			"key": "model",
 			"value": "gemini-2.5-flash-lite-preview-06-17",
 			"type": "string"
 		},
 		{
-			"id": "e494f706-70ff-4985-ba2f-f7accafb50ac",
+			"id": "bc96522b-7124-41be-b34a-bca0d401cf36",
+			"key": "e494f706-70ff-4985-ba2f-f7accafb50ac",
 			"value": "",
 			"type": "string"
 		}

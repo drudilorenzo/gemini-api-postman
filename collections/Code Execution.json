@@ -38,26 +38,6 @@
 				"disableBodyPruning": true
 			},
 			"request": {
-				"auth": {
-					"type": "apikey",
-					"apikey": [
-						{
-							"key": "in",
-							"value": "query",
-							"type": "string"
-						},
-						{
-							"key": "value",
-							"value": "{{vault:geminiApi}}",
-							"type": "string"
-						},
-						{
-							"key": "key",
-							"value": "key",
-							"type": "string"
-						}
-					]
-				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -91,8 +71,8 @@
 							"type": "apikey",
 							"apikey": [
 								{
-									"key": "in",
-									"value": "query",
+									"key": "key",
+									"value": "key",
 									"type": "string"
 								},
 								{
@@ -101,8 +81,8 @@
 									"type": "string"
 								},
 								{
-									"key": "key",
-									"value": "key",
+									"key": "in",
+									"value": "query",
 									"type": "string"
 								}
 							]
@@ -195,13 +175,30 @@
 		}
 	],
 	"auth": {
-		"type": "inherit"
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "key",
+				"value": "key",
+				"type": "string"
+			},
+			{
+				"key": "in",
+				"value": "query",
+				"type": "string"
+			},
+			{
+				"key": "value",
+				"value": "{{geminiKey}}",
+				"type": "string"
+			}
+		]
 	},
 	"event": [
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "bb4f463c-63ab-4a22-b424-011a38154ee0",
+				"id": "6ee7786c-909b-4a95-a458-8dd6efb62303",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -212,7 +209,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "9a7d7f87-683f-4eff-a29a-7e7910595cc5",
+				"id": "e7ac5d7d-ff3a-4f12-af92-3a961b8bbe84",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
