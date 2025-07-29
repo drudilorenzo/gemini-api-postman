@@ -282,7 +282,7 @@
 		"apikey": [
 			{
 				"key": "value",
-				"value": "{{geminiKey}}",
+				"value": "{{vault:geminiKey}}",
 				"type": "string"
 			},
 			{
@@ -301,7 +301,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "70168e26-56dc-4a5a-9c5e-217300fa8735",
+				"id": "a10c40e7-59e0-451c-836f-cedfb81a0c7d",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -312,7 +312,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "b79f1e8d-b5b7-4b36-bef0-99a54bee4f18",
+				"id": "882472b9-362b-41b6-9861-2ffa9c023133",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -329,7 +329,7 @@
 	],
 	"variable": [
 		{
-			"id": "f512de59-c1cf-4ec0-9a07-804fd92c54a7",
+			"id": "f833a133-5fe7-4150-a03e-334f16aae671",
 			"key": "model",
 			"value": "gemini-2.5-flash-lite-preview-06-17",
 			"type": "string"

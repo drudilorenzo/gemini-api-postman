@@ -178,6 +178,11 @@
 		"type": "apikey",
 		"apikey": [
 			{
+				"key": "value",
+				"value": "{{vault:geminiKey}}",
+				"type": "string"
+			},
+			{
 				"key": "key",
 				"value": "key",
 				"type": "string"
@@ -186,11 +191,6 @@
 				"key": "in",
 				"value": "query",
 				"type": "string"
-			},
-			{
-				"key": "value",
-				"value": "{{geminiKey}}",
-				"type": "string"
 			}
 		]
 	},
@@ -198,7 +198,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "6ee7786c-909b-4a95-a458-8dd6efb62303",
+				"id": "8c8baa4d-e552-482d-b9a7-1665e3e1392f",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -209,7 +209,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "e7ac5d7d-ff3a-4f12-af92-3a961b8bbe84",
+				"id": "7588e5df-6969-4b10-b2e2-419980336496",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [

@@ -369,7 +369,7 @@
 		"apikey": [
 			{
 				"key": "value",
-				"value": "{{geminiKey}}",
+				"value": "{{vault:geminiKey}}",
 				"type": "string"
 			},
 			{
@@ -388,7 +388,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "4d54e7e0-fd05-47ef-b35b-9f691616ff31",
+				"id": "db2f228f-0eb9-49c8-a5a1-410d7a3f11e9",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -399,7 +399,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "2ae9b091-78a9-40c0-92d2-4c5123e213e5",
+				"id": "28f68094-f67b-4a43-863d-cebeda99062c",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -416,7 +416,7 @@
 	],
 	"variable": [
 		{
-			"id": "237a133c-3ed0-4223-ba56-153f6403e46d",
+			"id": "aa697c9a-81e7-4fe0-8db9-e73f6b6e78dd",
 			"key": "model",
 			"value": "gemini-embedding-exp-03-07\n",
 			"type": "string"

@@ -568,13 +568,13 @@
 		"type": "apikey",
 		"apikey": [
 			{
-				"key": "in",
-				"value": "query",
+				"key": "value",
+				"value": "{{vault:geminiKey}}",
 				"type": "string"
 			},
 			{
-				"key": "value",
-				"value": "{{geminiKey}}",
+				"key": "in",
+				"value": "query",
 				"type": "string"
 			},
 			{
@@ -588,7 +588,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "dcdd2c33-dfae-457a-9014-443917b4591f",
+				"id": "8305b83e-e4ca-4f79-8e6b-9189a0807f30",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -599,7 +599,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "d93c3e49-4767-4b19-b606-f7f14913b69f",
+				"id": "c21e6a48-cc6e-4745-b42a-83a9ed880357",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -612,18 +612,18 @@
 	],
 	"variable": [
 		{
-			"id": "816a7fc7-8d0f-4aa6-baef-163ff3fd66bd",
+			"id": "9afda8e5-a6d0-4866-812c-0283b0de0c6d",
 			"key": "UPLOAD_URL",
 			"value": ""
 		},
 		{
-			"id": "8c991490-0e38-42e0-86d4-1c3d995374cb",
+			"id": "0236fa18-951c-4efa-ba75-6a17936a936e",
 			"key": "model",
 			"value": "gemini-2.5-flash-lite-preview-06-17",
 			"type": "string"
 		},
 		{
-			"id": "3e60d006-cc79-4b84-b3dc-03878a35bec9",
+			"id": "4b9fd40e-6d20-4875-bfd5-9f67601f6ffd",
 			"key": "FILE_URI",
 			"value": ""
 		}
