@@ -14,14 +14,14 @@ jobs:
         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
       - name: Run API tests
         run: |
-          postman collection run "${{ github.workspace }}/collections/Code Execution.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --integration-id "179639-${{ github.run_id }}"
-          postman collection run "${{ github.workspace }}/collections/Count Tokens.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --integration-id "179639-${{ github.run_id }}"
-          postman collection run "${{ github.workspace }}/collections/Document Understanding.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --integration-id "179639-${{ github.run_id }}"
-          postman collection run "${{ github.workspace }}/collections/Embeddings.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --integration-id "179639-${{ github.run_id }}"
-          postman collection run "${{ github.workspace }}/collections/Fetch Models.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --integration-id "179639-${{ github.run_id }}"
-          postman collection run "${{ github.workspace }}/collections/File API.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --integration-id "179639-${{ github.run_id }}"
-          postman collection run "${{ github.workspace }}/collections/Function Calling.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --integration-id "179639-${{ github.run_id }}"
-          postman collection run "${{ github.workspace }}/collections/Text Generation.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --integration-id "179639-${{ github.run_id }}"
-          postman collection run "${{ github.workspace }}/collections/Video Understanding.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --integration-id "179639-${{ github.run_id }}"
+          postman collection run "${{ github.workspace }}/collections/Code Execution.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --env-var "geminiKey=${{ secrets.GEMINI_KEY }}" --integration-id "179639-${{ github.run_id }}"
+          postman collection run "${{ github.workspace }}/collections/Count Tokens.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --env-var "geminiKey=${{ secrets.GEMINI_KEY }}" --integration-id "179639-${{ github.run_id }}"
+          postman collection run "${{ github.workspace }}/collections/Document Understanding.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --env-var "geminiKey=${{ secrets.GEMINI_KEY }}" --integration-id "179639-${{ github.run_id }}"
+          postman collection run "${{ github.workspace }}/collections/Embeddings.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --env-var "geminiKey=${{ secrets.GEMINI_KEY }}" --integration-id "179639-${{ github.run_id }}"
+          postman collection run "${{ github.workspace }}/collections/Fetch Models.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --env-var "geminiKey=${{ secrets.GEMINI_KEY }}" --integration-id "179639-${{ github.run_id }}"
+          postman collection run "${{ github.workspace }}/collections/File API.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --env-var "geminiKey=${{ secrets.GEMINI_KEY }}" --integration-id "179639-${{ github.run_id }}"
+          postman collection run "${{ github.workspace }}/collections/Function Calling.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --env-var "geminiKey=${{ secrets.GEMINI_KEY }}" --integration-id "179639-${{ github.run_id }}"
+          postman collection run "${{ github.workspace }}/collections/Text Generation.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --env-var "geminiKey=${{ secrets.GEMINI_KEY }}" --integration-id "179639-${{ github.run_id }}"
+          postman collection run "${{ github.workspace }}/collections/Video Understanding.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --env-var "geminiKey=${{ secrets.GEMINI_KEY }}" --integration-id "179639-${{ github.run_id }}"
           # Lint your API using Postman CLI
           postman api lint 1d36b630-de1f-482f-9d06-0da29a550341 --integration-id 179639
