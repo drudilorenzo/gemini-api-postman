@@ -569,7 +569,7 @@
 		"apikey": [
 			{
 				"key": "value",
-				"value": "{{vault:geminiKey}}",
+				"value": "{{geminiKey}}",
 				"type": "string"
 			},
 			{
@@ -588,7 +588,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "8305b83e-e4ca-4f79-8e6b-9189a0807f30",
+				"id": "62bc2df7-eb65-4350-9a71-63988fea9c7b",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -599,7 +599,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "c21e6a48-cc6e-4745-b42a-83a9ed880357",
+				"id": "48ba03c0-535b-4b1b-86a8-614b27ed601b",
 				"type": "text/javascript",
 				"packages": {},
 				"exec": [
@@ -612,18 +612,18 @@
 	],
 	"variable": [
 		{
-			"id": "9afda8e5-a6d0-4866-812c-0283b0de0c6d",
+			"id": "74179519-ce74-498d-bbe3-46c9ba72f5b9",
 			"key": "UPLOAD_URL",
 			"value": ""
 		},
 		{
-			"id": "0236fa18-951c-4efa-ba75-6a17936a936e",
+			"id": "7680b317-0254-4b57-bfe4-d5d35be88cf1",
 			"key": "model",
 			"value": "gemini-2.5-flash-lite-preview-06-17",
 			"type": "string"
 		},
 		{
-			"id": "4b9fd40e-6d20-4875-bfd5-9f67601f6ffd",
+			"id": "8e4dc77f-ef0a-480b-aa25-cd9b143f3ae0",
 			"key": "FILE_URI",
 			"value": ""
 		}
