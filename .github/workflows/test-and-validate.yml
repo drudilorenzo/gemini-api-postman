@@ -22,3 +22,4 @@ jobs:
           postman collection run "${{ github.workspace }}/collections/File API.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --env-var "geminiKey=${{ secrets.GEMINI_KEY }}" --integration-id "179639-${{ github.run_id }}"
           postman collection run "${{ github.workspace }}/collections/Text Generation.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --env-var "geminiKey=${{ secrets.GEMINI_KEY }}" --integration-id "179639-${{ github.run_id }}"
           postman collection run "${{ github.workspace }}/collections/Video Understanding.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --env-var "geminiKey=${{ secrets.GEMINI_KEY }}" --integration-id "179639-${{ github.run_id }}"
+          postman collection run "${{ github.workspace }}/collections/Function Calling.json" -e "45478362-4cc2a389-fef0-419a-8af1-85b265aa4458" --env-var "geminiKey=${{ secrets.GEMINI_KEY }}" --integration-id "179639-${{ github.run_id }}"
